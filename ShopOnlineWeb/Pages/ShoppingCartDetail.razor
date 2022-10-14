@@ -1,0 +1,57 @@
+﻿@page "/ShoppingCartDetail"
+@inherits ShoppingCartDetailBase
+
+@if (shoppingCartItems == null)
+{
+    <DisplaySpinner></DisplaySpinner>
+}
+else if (ErrorMessage != null)
+{
+    <DisplayError ErrorMessage="@ErrorMessage"></DisplayError>
+}
+else
+{
+    @if (shoppingCartItems != null && shoppingCartItems.Count() > 0)
+    {
+        <h3 class="mb-3">Shopping Cart</h3>
+        <div class="row mb-5">
+            <div class="col-md-9">
+                @foreach (var item in shoppingCartItems)
+                {
+                    <div class="row mb-4">
+                        <div class="col mb-4">
+                            <img src="@item.ProductImageUrl" width="250" class="img-thumbnail">
+                        </div>
+                        <div class="col-md-8">
+                            <h5>@item.ProductName</h5>
+                            <div class="mb-4">@item.ProductDescription</div>
+                            <span>
+                                Price: <b>@item.Price.ToString("C")</b>
+                                <input @oninput="()=> UpdateQty_Input(item.Id)" type="number" @bind="@item.Qty"></input>
+                                <button data-itemId="@item.Id" class="btn btn-info btn-sm update-qty" @onclick="(() => UpdateQtyCartItem_Click(item.Id, item.Qty))">Update Qty</button>
+                            </span>
+                            <div>
+                                <button class="btn btn-danger small" @onclick="() =>DeleteCartItem_Click(item.Id)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="col-md-3">
+                <h5>Cart Summary</h5>
+                <div class="mt-2">
+                    <div>Total - (@TotalQuantity)&nbsp;<b>@TotalPrice</b></div>
+                    <a href="Checkout" class="btn btn-success">
+                        <span class="oi oi-credit-card"></span>&nbsp;Process to Checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h4>There are Currently no items in your shopping cart.</h4>
+    }
+}
